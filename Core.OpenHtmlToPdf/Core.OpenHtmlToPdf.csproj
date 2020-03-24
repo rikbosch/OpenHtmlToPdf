@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Product>Core.OpenHtmlToPdf</Product>
+    <PackageId>Core.OpenHtmlToPdf</PackageId>
+    <Description>.NET library for rendering HTML documents to PDF format.</Description>
+    <Authors>Timo Vilppu, Patrick Moore, Rik Bosch</Authors>
+    <Copyright>Creative Commons Attribution 3.0</Copyright>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Assets\Core.OpenHtmlToPdf.WkHtmlToPdf.exe" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\Core.OpenHtmlToPdf.WkHtmlToPdf.exe" />
+  </ItemGroup>
+
+</Project>

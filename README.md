@@ -1,63 +1,66 @@
-# OpenHtmlToPdf #
+# OpenHtmlToPdf
 
-.NET library for rendering HTML documents to PDF format. 
+.NET library for rendering HTML documents to PDF format.
 
 OpenHtmlToPdf uses [WkHtmlToPdf](http://github.com/antialize/wkhtmltopdf) native Windows library for HTML to PDF rendering.
 
-## Download ##
+## Download
 
-OpenHtmlToPdf can be download as a [NuGet package] (https://www.nuget.org/packages/OpenHtmlToPdf/)
+This source code can be compiled.
 
-## Usage ##
+## Usage
 
-### Generate PDF with default settings ###
-	const string html =
-		"<!DOCTYPE html>" +
-		"<html>" +
-		"<head><meta charset='UTF-8'><title>Title</title></head>" +
-		"<body>Body text...</body>" +
-		"</html>";
+### Generate PDF with default settings
 
-	var pdf = Pdf
-		.From(html)
-		.Content();
+    const string html =
+    	"<!DOCTYPE html>" +
+    	"<html>" +
+    	"<head><meta charset='UTF-8'><title>Title</title></head>" +
+    	"<body>Body text...</body>" +
+    	"</html>";
 
-### Defining fluent settings ###
-	const string html =
-		"<!DOCTYPE html>" +
-		"<html>" +
-		"<head><meta charset='UTF-8'><title>Title</title></head>" +
-		"<body>Body text...</body>" +
-		"</html>";
+    var pdf = Pdf
+    	.From(html)
+    	.Content();
 
-	var pdf = Pdf
-		.From(html)
-		.OfSize(PaperSize.A4)
-		.WithTitle("Title")
-		.WithoutOutline()
-		.WithMargins(1.25.Centimeters())
-		.Portrait()
-		.Comressed()
-		.Content();
+### Defining fluent settings
 
-### Defining wkhtmltopdf settings directly ###
+    const string html =
+    	"<!DOCTYPE html>" +
+    	"<html>" +
+    	"<head><meta charset='UTF-8'><title>Title</title></head>" +
+    	"<body>Body text...</body>" +
+    	"</html>";
+
+    var pdf = Pdf
+    	.From(html)
+    	.OfSize(PaperSize.A4)
+    	.WithTitle("Title")
+    	.WithoutOutline()
+    	.WithMargins(1.25.Centimeters())
+    	.Portrait()
+    	.Comressed()
+    	.Content();
+
+### Defining wkhtmltopdf settings directly
 
 [Settings API documentation](http://wkhtmltopdf.org/libwkhtmltox/pagesettings.html)
 
-	const string html =
-		"<!DOCTYPE html>" +
-		"<html>" +
-		"<head><meta charset='UTF-8'><title>Title</title></head>" +
-		"<body>Body text...</body>" +
-		"</html>";
+    const string html =
+    	"<!DOCTYPE html>" +
+    	"<html>" +
+    	"<head><meta charset='UTF-8'><title>Title</title></head>" +
+    	"<body>Body text...</body>" +
+    	"</html>";
 
-	var pdf = Pdf
-		.From(html)
-		.WithGlobalSetting("orientation", "Landscape")
-		.WithObjectSetting("web.defaultEncoding", "utf-8")
-		.Content();
-#### License ####
+    var pdf = Pdf
+    	.From(html)
+    	.WithGlobalSetting("orientation", "Landscape")
+    	.WithObjectSetting("web.defaultEncoding", "utf-8")
+    	.Content();
 
-This work, "OpenHtmlToPdf", is a derivative of "TuesPechkin" by tuespetre (Derek Gray) used under the Creative Commons Attribution 3.0 license.
+#### License
 
-This work is made available under the terms of the Creative Commons Attribution 3.0 license (viewable at http://creativecommons.org/licenses/by/3.0/) by Timo Vilppu
+This work, "OpenHtmlToPdf", is a port to .Net Core of the code by [Timo Vilppu](https://github.com/vilppu/OpenHtmlToPdf). His work was a derivative of ["TuesPechkin" by tuespetre (Derek Gray)](https://github.com/tuespetre/TuesPechkin) used under the Creative Commons Attribution 3.0 license.
+
+This work is made available under the terms of the Creative Commons Attribution 3.0 license (viewable at http://creativecommons.org/licenses/by/3.0/)
