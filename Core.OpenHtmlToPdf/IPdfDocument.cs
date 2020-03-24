@@ -1,9 +1,13 @@
-﻿namespace Core.OpenHtmlToPdf
+﻿using System.IO;
+using System.Threading.Tasks;
+
+namespace Core.OpenHtmlToPdf
 {
     public interface IPdfDocument
     {
         IPdfDocument WithGlobalSetting(string key, string value);
         IPdfDocument WithObjectSetting(string key, string value);
-        byte[] Content();
+        Task<byte[]> Content();
+        Task WriteToStream(Stream target);
     }
 }

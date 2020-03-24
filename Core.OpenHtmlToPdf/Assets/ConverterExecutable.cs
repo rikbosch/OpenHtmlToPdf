@@ -43,7 +43,7 @@ namespace Core.OpenHtmlToPdf.Assets
             }
         }
 
-        private static Stream GetConverterExecutable() => File.OpenRead("./Assets/Core.OpenHtmlToPdf.WkHtmlToPdf.exe");
+        private static Stream GetConverterExecutable() => typeof(ConverterExecutable).Assembly.GetManifestResourceStream(typeof(ConverterExecutable), "Core.OpenHtmlToPdf.WkHtmlToPdf.exe");
 
         private void Create(byte[] fileContent)
         {
@@ -70,7 +70,7 @@ namespace Core.OpenHtmlToPdf.Assets
         private static string BundledFilesDirectory() => Path.Combine(Path.GetTempPath(), "Core.OpenHtmlToPdf", Version());
 
         private static string Version() => string.Format("{0}_{1}",
-                Assembly.GetExecutingAssembly().GetName().Version,
-                Environment.Is64BitProcess ? 64 : 32);
+                Assembly.GetExecutingAssembly().GetName().Version, 64
+                );
     }
 }

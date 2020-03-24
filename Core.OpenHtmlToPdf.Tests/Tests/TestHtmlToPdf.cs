@@ -1,4 +1,5 @@
 using System.IO;
+using System.Threading.Tasks;
 using FluentAssertions;
 using OpenHtmlToPdf.Tests.Helpers;
 using Xunit;
@@ -12,37 +13,37 @@ namespace Core.OpenHtmlToPdf.Tests
         private const double _letterLongLengthInPostScriptPoints = 792;
 
         [Fact]
-        public void Pdf_document_content()
+        public async Task Pdf_document_content()
         {
             const string expectedDocumentContent = "Hello World!";
             string html = string.Format(_htmlDocumentFormat, expectedDocumentContent);
 
-            byte[] result = Pdf.From(html).EncodedWith("utf-8").Content();
+            var result = await Pdf.From(html).EncodedWith("utf-8").Content();
             string text = PdfDocumentReader.ToText(result);
 
             text.Should().BeEquivalentTo(expectedDocumentContent);
         }
 
         [Fact]
-        public void Text_encoding()
+        public async Task Text_encoding()
         {
             const string expectedDocumentContent = "ƒцех";
             string html = string.Format(_htmlDocumentFormat, expectedDocumentContent);
 
-            byte[] result = Pdf.From(html).EncodedWith("utf-8").Content();
+            byte[] result = await Pdf.From(html).EncodedWith("utf-8").Content();
             string text = PdfDocumentReader.ToText(result);
 
             text.Should().BeEquivalentTo(expectedDocumentContent);
         }
 
         [Fact]
-        public void Document_title()
+        public async Task Document_title()
         {
             const string expectedTitle = "Hello World!";
             const string expectedDocumentContent = "Hello User!";
             string html = string.Format(_htmlDocumentFormat, expectedDocumentContent);
 
-            byte[] result = Pdf.From(html)
+            byte[] result = await Pdf.From(html)
                 .WithTitle(expectedTitle)
                 .Content();
 
@@ -54,12 +55,12 @@ namespace Core.OpenHtmlToPdf.Tests
         }
 
         [Fact]
-        public void Page_size()
+        public async Task Page_size()
         {
             const string expectedDocumentContent = "Hello World!";
             string html = string.Format(_htmlDocumentFormat, expectedDocumentContent);
 
-            byte[] result = Pdf.From(html)
+            byte[] result = await Pdf.From(html)
                 .OfSize(PaperSize.Letter)
                 .Content();
 
@@ -73,12 +74,12 @@ namespace Core.OpenHtmlToPdf.Tests
         }
 
         [Fact]
-        public void Portrait()
+        public async Task Portrait()
         {
             const string expectedDocumentContent = "Hello World!";
             string html = string.Format(_htmlDocumentFormat, expectedDocumentContent);
 
-            byte[] result = Pdf.From(html)
+            byte[] result = await Pdf.From(html)
                 .OfSize(PaperSize.Letter)
                 .Portrait()
                 .Content();
@@ -93,12 +94,12 @@ namespace Core.OpenHtmlToPdf.Tests
         }
 
         [Fact]
-        public void Landscape()
+        public async Task Landscape()
         {
             const string expectedDocumentContent = "Hello World!";
             string html = string.Format(_htmlDocumentFormat, expectedDocumentContent);
 
-            byte[] result = Pdf.From(html)
+            byte[] result = await Pdf.From(html)
                 .OfSize(PaperSize.Letter)
                 .Landscape()
                 .Content();
@@ -113,61 +114,61 @@ namespace Core.OpenHtmlToPdf.Tests
         }
 
         [Fact]
-        public void Margins()
+        public async Task Margins()
         {
             const string expectedDocumentContent = "Hello World!";
             string html = string.Format(_htmlDocumentFormat, expectedDocumentContent);
 
-            byte[] result = Pdf.From(html).WithMargins(1.25.Centimeters()).Content();
+            byte[] result = await Pdf.From(html).WithMargins(1.25.Centimeters()).Content();
             string text = PdfDocumentReader.ToText(result);
 
             text.Should().BeEquivalentTo(expectedDocumentContent);
         }
 
         [Fact]
-        public void With_outline()
+        public async Task With_outline()
         {
             const string expectedDocumentContent = "Hello World!";
             string html = string.Format(_htmlDocumentFormat, expectedDocumentContent);
 
-            byte[] result = Pdf.From(html).WithOutline().Content();
+            byte[] result = await Pdf.From(html).WithOutline().Content();
             string text = PdfDocumentReader.ToText(result);
 
             text.Should().BeEquivalentTo(expectedDocumentContent);
         }
 
         [Fact]
-        public void Without_outline()
+        public async Task Without_outline()
         {
             const string expectedDocumentContent = "Hello World!";
             string html = string.Format(_htmlDocumentFormat, expectedDocumentContent);
 
-            byte[] result = Pdf.From(html).WithoutOutline().Content();
+            byte[] result = await Pdf.From(html).WithoutOutline().Content();
             string text = PdfDocumentReader.ToText(result);
 
             text.Should().BeEquivalentTo(expectedDocumentContent);
         }
 
         [Fact]
-        public void Compressed()
+        public async Task Compressed()
         {
             const string expectedDocumentContent = "Hello World!";
             string html = string.Format(_htmlDocumentFormat, expectedDocumentContent);
 
-            byte[] result = Pdf.From(html).Comressed().Content();
+            byte[] result = await Pdf.From(html).Comressed().Content();
             string text = PdfDocumentReader.ToText(result);
 
             text.Should().BeEquivalentTo(expectedDocumentContent);
         }
 
         [Fact]
-        public void Is_directory_agnostic()
+        public async Task Is_directory_agnostic()
         {
             const string expectedDocumentContent = "Hello World!";
             string html = string.Format(_htmlDocumentFormat, expectedDocumentContent);
 
             Directory.SetCurrentDirectory(@"c:\");
-            byte[] result = Pdf.From(html).Content();
+            byte[] result = await Pdf.From(html).Content();
             string text = PdfDocumentReader.ToText(result);
 
             text.Should().BeEquivalentTo(expectedDocumentContent);

@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using Core.OpenHtmlToPdf.Assets;
+using Core.OpenHtmlToPdf.WkHtmlToPdf;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.Serialization.Json;
 using System.Text;
-using Core.OpenHtmlToPdf.Assets;
-using Core.OpenHtmlToPdf.WkHtmlToPdf;
 
 namespace Core.OpenHtmlToPdf
 {
@@ -17,8 +17,8 @@ namespace Core.OpenHtmlToPdf
 
         private static void Convert(ConversionSource conversionSource)
         {
-            ProcessStartInfo processStartInfo = GetProcessStartInfo();
-            Process process = Process.Start(processStartInfo);
+            var processStartInfo = GetProcessStartInfo();
+            var process = Process.Start(processStartInfo);
 
             process.Convert(conversionSource);
         }
@@ -34,7 +34,10 @@ namespace Core.OpenHtmlToPdf
         {
             if (process.ExitCode != 0)
             {
-                throw new PdfDocumentCreationFailedException(process.StandardError.ReadToEnd());
+                var errorMessageBase64 = process.StandardError.ReadToEnd();
+                var errorDecoded = Encoding.UTF8.GetString(System.Convert.FromBase64String(errorMessageBase64));
+
+                throw new PdfDocumentCreationFailedException(errorDecoded);
             }
         }
 
@@ -46,17 +49,19 @@ namespace Core.OpenHtmlToPdf
 
         private static string SerializeToBase64EncodedString(ConversionSource conversionSource)
         {
-            string result = SerializeToJson(conversionSource);
-            return System.Convert.ToBase64String(Encoding.UTF8.GetBytes(result));
+            var result = SerializeToJson(conversionSource);
+            var args = System.Convert.ToBase64String(Encoding.UTF8.GetBytes(result));
+            return args;
         }
 
         private static string SerializeToJson(ConversionSource conversionSource)
         {
-            using (MemoryStream stream = new MemoryStream())
+            using (var ms = new MemoryStream())
             {
-                new DataContractJsonSerializer(typeof(ConversionSource)).WriteObject(stream, conversionSource);
-                stream.Position = 0;
-                return new StreamReader(stream).ReadToEnd();
+                new DataContractJsonSerializer(typeof(ConversionSource)).WriteObject(ms, conversionSource);
+
+                ms.Position = 0;
+                return Encoding.UTF8.GetString(ms.GetBuffer());
             }
         }
 
@@ -72,7 +77,7 @@ namespace Core.OpenHtmlToPdf
 
         private static ConversionSource ToConversionSource(string html, IDictionary<string, string> globalSettings, IDictionary<string, string> objectSettings)
         {
-            ConversionSource conversionSource = new ConversionSource
+            var conversionSource = new ConversionSource
             {
                 Html = html,
                 GlobalSettings = globalSettings,

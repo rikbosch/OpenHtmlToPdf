@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Core.OpenHtmlToPdf
 {
@@ -43,19 +45,40 @@ namespace Core.OpenHtmlToPdf
                 return new DocumentBuilder(_html, _globalSettings, objectSetting);
             }
 
-            public byte[] Content() => ReadContentUsingTemporaryFile(TemporaryPdf.TemporaryFilePath());
+            public async Task WriteToStream(Stream target)
+            {
+                var temporaryFilename = TemporaryPdf.TemporaryFilePath();
+                _globalSettings["out"] = temporaryFilename;
 
-            private byte[] ReadContentUsingTemporaryFile(string temporaryFilename)
+                HtmlToPdfConverterProcess.ConvertToPdf(_html, _globalSettings, _objectSettings);
+                try
+                {
+                    await TemporaryPdf.CopyToAsync(temporaryFilename, target);
+                }
+                finally
+                {
+                    TemporaryPdf.DeleteTemporaryFile(temporaryFilename);
+                }
+            }
+
+            public Task<byte[]> Content() => ReadContentUsingTemporaryFile(TemporaryPdf.TemporaryFilePath());
+
+            private async Task<byte[]> ReadContentUsingTemporaryFile(string temporaryFilename)
             {
                 _globalSettings["out"] = temporaryFilename;
 
                 HtmlToPdfConverterProcess.ConvertToPdf(_html, _globalSettings, _objectSettings);
+                try
+                {
+                    return await TemporaryPdf.ReadTemporaryFileContent(temporaryFilename);
 
-                byte[] content = TemporaryPdf.ReadTemporaryFileContent(temporaryFilename);
+                }
+                finally
+                {
+                    TemporaryPdf.DeleteTemporaryFile(temporaryFilename);
+                }
 
-                TemporaryPdf.DeleteTemporaryFile(temporaryFilename);
 
-                return content;
             }
         }
     }

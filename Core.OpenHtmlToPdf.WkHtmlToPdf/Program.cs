@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Core.OpenHtmlToPdf.WkHtmlToPdf.WkHtmlToX;
+using System;
 using System.IO;
 using System.Runtime.Serialization.Json;
 using System.Text;
-using Core.OpenHtmlToPdf.WkHtmlToPdf.WkHtmlToX;
 
 namespace Core.OpenHtmlToPdf.WkHtmlToPdf
 {
@@ -27,9 +26,9 @@ namespace Core.OpenHtmlToPdf.WkHtmlToPdf
 
         private static void WriteExceptionMessageToStandardError(Exception ex)
         {
-            using (Stream standardErrort = Console.OpenStandardError())
+            using (var standardErrort = Console.OpenStandardError())
             {
-                using (StreamWriter writer = new StreamWriter(standardErrort))
+                using (var writer = new StreamWriter(standardErrort))
                 {
                     writer.WriteAsBase64EncodedString(ex.Message);
                 }
@@ -40,9 +39,9 @@ namespace Core.OpenHtmlToPdf.WkHtmlToPdf
 
         private static ConversionSource ConversionSource()
         {
-            using (Stream standardInput = Console.OpenStandardInput())
+            using (var standardInput = Console.OpenStandardInput())
             {
-                using (StreamReader streamReader = new StreamReader(standardInput))
+                using (var streamReader = new StreamReader(standardInput))
                 {
                     return DeserializeBase64EncodedSource<ConversionSource>(streamReader.ReadToEnd());
                 }
@@ -51,7 +50,7 @@ namespace Core.OpenHtmlToPdf.WkHtmlToPdf
 
         private static T DeserializeBase64EncodedSource<T>(string base64EncodedObject)
         {
-            using (MemoryStream stream = new MemoryStream(Convert.FromBase64String(base64EncodedObject)))
+            using (var stream = new MemoryStream(Convert.FromBase64String(base64EncodedObject)))
             {
                 return (T)new DataContractJsonSerializer(typeof(T)).ReadObject(stream);
             }
@@ -59,16 +58,16 @@ namespace Core.OpenHtmlToPdf.WkHtmlToPdf
 
         private static void ConvertToPdf(ConversionSource conversionSource)
         {
-            using (WkHtmlToPdfContext wkhtmlToPdfContext = WkHtmlToPdfContext.Create())
+            using (var wkhtmlToPdfContext = WkHtmlToPdfContext.Create())
             {
-                foreach (KeyValuePair<string, string> globalSetting in conversionSource.GlobalSettings)
+                foreach (var globalSetting in conversionSource.GlobalSettings)
                 {
                     WkHtmlToX.WkHtmlToPdf.wkhtmltopdf_set_global_setting(wkhtmlToPdfContext.GlobalSettingsPointer,
                         globalSetting.Key,
                         globalSetting.Value);
                 }
 
-                foreach (KeyValuePair<string, string> objectSetting in conversionSource.ObjectSettings)
+                foreach (var objectSetting in conversionSource.ObjectSettings)
                 {
                     WkHtmlToX.WkHtmlToPdf.wkhtmltopdf_set_object_setting(wkhtmlToPdfContext.ObjectSettingsPointer,
                         objectSetting.Key,
